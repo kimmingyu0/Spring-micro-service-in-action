@@ -7,7 +7,7 @@ spring:
     import: "optional:configserver:http://configserver:8071"
   cloud:
     config:
-      name: licensing-service-dev
+      name: licensing-service
       active: dev
   main:
     allow-bean-definition-overriding: true
