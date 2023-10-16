@@ -3,6 +3,10 @@ package com.optimagrowth.license.controller;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import com.optimagrowth.license.utils.UserContextHolder;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,10 +22,14 @@ import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.service.LicenseService;
 
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeoutException;
 
 @RestController
 @RequestMapping(value="v1/organization/{organizationId}/license")
 public class LicenseController {
+
+	private static final Logger logger = LoggerFactory.getLogger(LicenseController.class);
 
 	@Autowired
 	private LicenseService licenseService;
@@ -30,7 +38,7 @@ public class LicenseController {
 	public ResponseEntity<License> getLicense( @PathVariable("organizationId") String organizationId,
 											   @PathVariable("licenseId") String licenseId) {
 
-		License license = licenseService.getLicense(licenseId, organizationId);
+		License license = licenseService.getLicense(licenseId, organizationId, "");
 		license.add(
 				linkTo(methodOn(LicenseController.class).getLicense(organizationId, license.getLicenseId())).withSelfRel(),
 				linkTo(methodOn(LicenseController.class).createLicense(license)).withRel("createLicense"),
@@ -64,7 +72,8 @@ public class LicenseController {
 	}
 
 	@RequestMapping(value="/",method = RequestMethod.GET)
-	public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
+	public List<License> getLicenses(@PathVariable("organizationId") String organizationId) throws TimeoutException {
+		logger.debug("LicenseServiceController Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
 		return licenseService.getLicensesByOrganization(organizationId);
 	}
 }
