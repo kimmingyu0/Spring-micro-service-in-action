@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.optimagrowth.license.model.License;
 import com.optimagrowth.license.service.LicenseService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value="v1/organization/{organizationId}/license")
 public class LicenseController {
@@ -59,5 +61,10 @@ public class LicenseController {
 										 @PathVariable("licenseId")String licenseId,
 										 @PathVariable("clientType") String clientType){
 		return licenseService.getLicense(licenseId, organizationId, clientType);
+	}
+
+	@RequestMapping(value="/",method = RequestMethod.GET)
+	public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
+		return licenseService.getLicensesByOrganization(organizationId);
 	}
 }

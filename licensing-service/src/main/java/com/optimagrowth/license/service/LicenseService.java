@@ -1,5 +1,6 @@
 package com.optimagrowth.license.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.optimagrowth.license.model.Organization;
@@ -110,5 +111,9 @@ public class LicenseService {
 		}
 
 		return organization;
+	}
+
+	public List<License> getLicensesByOrganization(String organizationId) {
+		return licenseRepository.findByOrganizationId(organizationId);
 	}
 }
