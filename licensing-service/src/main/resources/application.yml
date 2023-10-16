@@ -1,13 +1,13 @@
 spring:
   application:
-    name: licensing-server
+    name: licensing-service
   profiles:
     active: dev
   config:
     import: "optional:configserver:http://configserver:8071"
   cloud:
     config:
-      name: licensing-service
-      active: dev
+      # config server 에서 활성화 시킬 환경 변수 파일
+      name: licensing-service #, licensing-service-dev
   main:
     allow-bean-definition-overriding: true
